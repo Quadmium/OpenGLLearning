@@ -38,19 +38,19 @@ public class MainGameLoop {
         ModelTexture texture = new ModelTexture(loader.loadTexture("white"));
 
         TexturedModel staticModel = new TexturedModel(model, texture);
+        
+        texture.setShineDamper(10);
+        texture.setReflectivity(1);
 
         Entity entity = new Entity(staticModel, new Vector3f(0, -5, -25), 0, 0, 0, 1);
         
         Light light = new Light(new Vector3f(0, 0, -20), new Vector3f(1, 1, 1));
-        Light light2 = new Light(new Vector3f(0, 0, -20), new Vector3f(1, 0, 1));
 
         Camera camera = new Camera();
 
         while (!Display.isCloseRequested()) {
 
-            camera.move();
-            
-            entity.increaseRotation(0, 1, 0);
+            camera.move()
 
             renderer.prepare();
 
