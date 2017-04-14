@@ -32,9 +32,9 @@ public class MainGameLoop {
         StaticShader shader = new StaticShader();
         Renderer renderer = new Renderer(shader);
 
-        RawModel model = OBJLoader.loadObjModel("stall", loader);
+        RawModel model = OBJLoader.loadObjModel("dragon", loader);
 
-        ModelTexture texture = new ModelTexture(loader.loadTexture("stallTexture"));
+        ModelTexture texture = new ModelTexture(loader.loadTexture("scales"));
 
         TexturedModel staticModel = new TexturedModel(model, texture);
 
@@ -46,7 +46,7 @@ public class MainGameLoop {
 
             camera.move();
             
-            entity.increaseRotation(0, 1, 0);
+            //entity.increaseRotation(0, 1, 0);
 
             renderer.prepare();
 
