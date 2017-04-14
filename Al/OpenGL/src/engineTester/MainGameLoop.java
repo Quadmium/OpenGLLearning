@@ -8,6 +8,8 @@ package engineTester;
 import entities.Camera;
 import entities.Entity;
 import entities.Light;
+import java.util.ArrayList;
+import java.util.List;
 import org.lwjgl.opengl.Display;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
@@ -16,6 +18,7 @@ import models.TexturedModel;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.MasterRenderer;
 import renderEngine.OBJLoader;
+import terrain.Terrain;
 import textures.ModelTexture;
 
 /**
@@ -30,20 +33,24 @@ public class MainGameLoop {
 
         Loader loader = new Loader();
 
-        RawModel model = OBJLoader.loadObjModel("stall", loader);
+        RawModel model = OBJLoader.loadObjModel("tree", loader);
 
-        ModelTexture texture = new ModelTexture(loader.loadTexture("stallTexture"));
+        ModelTexture texture = new ModelTexture(loader.loadTexture("tree"));
 
         TexturedModel staticModel = new TexturedModel(model, texture);
         
-        //texture.setShineDamper(10);
-        //texture.setReflectivity(1);
-
-        Entity entity = new Entity(staticModel, new Vector3f(0, -5, -25), 0, 180, 0, 1);
+        List<Entity> trees = new ArrayList<Entity>();
         
-        Light light = new Light(new Vector3f(0, 0, -20), new Vector3f(1, 1, 1));
+        for(int i = 0; i < 1000; i++)
+            trees.add(new Entity(staticModel, new Vector3f((float)(Math.random() * 400 - 200), 0, -(float)(Math.random() * 400)), 0, 0, 0, 1));
+        
+        Light light = new Light(new Vector3f(3000, 2000, 2000), new Vector3f(1, 1, 1));
+        
+        Terrain terrain = new Terrain(0, -1, loader, new ModelTexture(loader.loadTexture("grass")));
+        Terrain terrain2 = new Terrain(-1, -1, loader, new ModelTexture(loader.loadTexture("grass")));
 
         Camera camera = new Camera();
+        camera.setPosition(new Vector3f(0, 1, 0));
         
         MasterRenderer renderer = new MasterRenderer();
 
@@ -51,7 +58,11 @@ public class MainGameLoop {
 
             camera.move();
             
-            renderer.processEntity(entity);
+            renderer.processTerrain(terrain);
+            renderer.processTerrain(terrain2);
+            
+            for(Entity entity : trees)
+                renderer.processEntity(entity);
             
             renderer.render(light, camera);
             
