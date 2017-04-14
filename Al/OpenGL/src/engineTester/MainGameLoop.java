@@ -14,9 +14,8 @@ import renderEngine.Loader;
 import models.RawModel;
 import models.TexturedModel;
 import org.lwjgl.util.vector.Vector3f;
+import renderEngine.MasterRenderer;
 import renderEngine.OBJLoader;
-import renderEngine.Renderer;
-import shaders.StaticShader;
 import textures.ModelTexture;
 
 /**
@@ -30,47 +29,37 @@ public class MainGameLoop {
         DisplayManager.createDisplay();
 
         Loader loader = new Loader();
-        StaticShader shader = new StaticShader();
-        Renderer renderer = new Renderer(shader);
 
-        RawModel model = OBJLoader.loadObjModel("dragon", loader);
+        RawModel model = OBJLoader.loadObjModel("stall", loader);
 
-        ModelTexture texture = new ModelTexture(loader.loadTexture("white"));
+        ModelTexture texture = new ModelTexture(loader.loadTexture("stallTexture"));
 
         TexturedModel staticModel = new TexturedModel(model, texture);
         
-        texture.setShineDamper(10);
-        texture.setReflectivity(1);
+        //texture.setShineDamper(10);
+        //texture.setReflectivity(1);
 
-        Entity entity = new Entity(staticModel, new Vector3f(0, -5, -25), 0, 0, 0, 1);
+        Entity entity = new Entity(staticModel, new Vector3f(0, -5, -25), 0, 180, 0, 1);
         
         Light light = new Light(new Vector3f(0, 0, -20), new Vector3f(1, 1, 1));
 
         Camera camera = new Camera();
+        
+        MasterRenderer renderer = new MasterRenderer();
 
         while (!Display.isCloseRequested()) {
 
-            camera.move()
-
-            renderer.prepare();
-
-            shader.start();
+            camera.move();
             
-            shader.loadLight(light);
+            renderer.processEntity(entity);
             
-            shader.loadViewMatrix(camera);
-
-            renderer.render(entity, shader);
-
-            shader.stop();
-
-            //game logic
-            //render
+            renderer.render(light, camera);
+            
             DisplayManager.updateDisplay();
 
         }
 
-        shader.cleanUp();
+        renderer.cleanUp();
         loader.cleanUp();
         DisplayManager.closeDisplay();
 
