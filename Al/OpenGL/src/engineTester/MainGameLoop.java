@@ -7,6 +7,7 @@ package engineTester;
 
 import entities.Camera;
 import entities.Entity;
+import entities.Light;
 import org.lwjgl.opengl.Display;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
@@ -34,11 +35,14 @@ public class MainGameLoop {
 
         RawModel model = OBJLoader.loadObjModel("dragon", loader);
 
-        ModelTexture texture = new ModelTexture(loader.loadTexture("scales"));
+        ModelTexture texture = new ModelTexture(loader.loadTexture("white"));
 
         TexturedModel staticModel = new TexturedModel(model, texture);
 
-        Entity entity = new Entity(staticModel, new Vector3f(0, 0, -50), 0, 0, 0, 1);
+        Entity entity = new Entity(staticModel, new Vector3f(0, -5, -25), 0, 0, 0, 1);
+        
+        Light light = new Light(new Vector3f(0, 0, -20), new Vector3f(1, 1, 1));
+        Light light2 = new Light(new Vector3f(0, 0, -20), new Vector3f(1, 0, 1));
 
         Camera camera = new Camera();
 
@@ -46,11 +50,14 @@ public class MainGameLoop {
 
             camera.move();
             
-            //entity.increaseRotation(0, 1, 0);
+            entity.increaseRotation(0, 1, 0);
 
             renderer.prepare();
 
             shader.start();
+            
+            shader.loadLight(light);
+            
             shader.loadViewMatrix(camera);
 
             renderer.render(entity, shader);
